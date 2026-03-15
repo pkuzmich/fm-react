@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import Pizza from "../Pizza";
 import Cart from "../Cart";
-import { intl } from "../utils";
+import { useCurrency } from "../useCurrencty";
 import { CartContext } from "../contexts";
 
 export const Route = createLazyFileRoute("/order")({
@@ -33,7 +33,7 @@ function Order() {
 
   if (!loading) {
     selectedPizza = pizzaTypes.find((pizza) => pizzaType === pizza.id);
-    price = intl.format(
+    price = useCurrency(
       selectedPizza.sizes ? selectedPizza.sizes[pizzaSize] : "",
     );
   }

@@ -22,8 +22,6 @@ function PastOrdersRoute() {
       </div>
     );
 
-  console.log(data);
-
   return (
     <div className="past-orders">
       <table>

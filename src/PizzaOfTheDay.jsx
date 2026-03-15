@@ -1,5 +1,5 @@
 import { usePizzaOfTheDay } from "./usePizzaOfTheDay";
-import { intl } from "./utils";
+import { useCurrency } from "./useCurrencty";
 
 function PizzaOfTheDay() {
   const pizzaOfTheDay = usePizzaOfTheDay();
@@ -16,7 +16,7 @@ function PizzaOfTheDay() {
           <h3>{pizzaOfTheDay.name}</h3>
           <p>{pizzaOfTheDay.description}</p>
           <p className="pizza-of-the-day-price">
-            From: {intl.format(pizzaOfTheDay.sizes.S)}
+            From: {useCurrency(pizzaOfTheDay.sizes.S)}
           </p>
         </div>
         <img

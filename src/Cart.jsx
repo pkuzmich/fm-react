@@ -1,4 +1,4 @@
-import { intl } from "./utils";
+import { useCurrency } from "./useCurrencty";
 
 function Cart({ cart, checkout }) {
   let totalPrice = 0;
@@ -19,7 +19,7 @@ function Cart({ cart, checkout }) {
           </li>
         ))}
       </ul>
-      <p>Total price: {intl.format(totalPrice)}</p>
+      <p>Total price: {useCurrency(totalPrice)}</p>
       <button onClick={checkout}>Checkout</button>
     </div>
   );
