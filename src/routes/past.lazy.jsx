@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { Suspense, use, useState } from "react";
 import getPastOrders from "../api/getPastOrders";
 import getPastOrder from "../api/getPastOrder";
 import Modal from "../Modal";
@@ -12,23 +12,41 @@ export const Route = createLazyFileRoute("/past")({
 });
 
 function ErrorBoundaryWrapperPastOrderRoutes() {
+  const [page, setPage] = useState(1);
+
+  // Fetching past orders
+  const loadedPromise = useQuery({
+    queryKey: ["past-orders", page],
+    queryFn: () => getPastOrders(page),
+    staleTime: 30000,
+  }).promise;
+
   return (
     <ErrorBoundary>
-      <PastOrdersRoute />
+      <Suspense
+        fallback={
+          <div className="past-orders">
+            <h2>Loading Past Order ...</h2>
+          </div>
+        }
+      >
+        <PastOrdersRoute
+          loadedPromise={loadedPromise}
+          page={page}
+          setPage={setPage}
+        />
+      </Suspense>
     </ErrorBoundary>
   );
 }
 
-function PastOrdersRoute() {
-  const [page, setPage] = useState(1);
-  const [selectedOrderId, setSelectedOrderId] = useState(null);
+function PastOrdersRoute(props) {
+  const { loadedPromise, page, setPage } = props;
+  const data = use(loadedPromise);
 
-  // Fetching past orders
-  const { isLoading, data } = useQuery({
-    queryKey: ["past-orders", page],
-    queryFn: () => getPastOrders(page),
-    staleTime: 30000,
-  });
+  console.log(data);
+
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   // Fetching order details
   const { isLoading: isLoadingPastOrder, data: pastOrderData } = useQuery({
@@ -37,13 +55,6 @@ function PastOrdersRoute() {
     staleTime: 86400000, // one day in milliseconds
     enabled: !!selectedOrderId,
   });
-
-  if (isLoading)
-    return (
-      <div className="past-orders">
-        <h2>Loading...</h2>
-      </div>
-    );
 
   return (
     <div className="past-orders">
